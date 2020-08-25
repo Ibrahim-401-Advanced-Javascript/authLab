@@ -14,11 +14,14 @@ const createAuth = (req, res, next) => {
   // extracts encoded bit by
   // splitting the header into an array
   // and popping the second element off
-  let baseAuth = req.headers.authorization.split(' ').pop();
+  let encodedPair = req.headers.authorization.split(' ').pop();
+  console.log('encoded pair: ', encodedPair);
 
   // decodes to user:pass
   // splits it to an array
-  let [user, pass] = base64.decode(baseAuth).split(':');
+  let decoded = base64.decode(encodedPair);
+  let [user, pass] = decoded.split(':');
+  console.log('decoded: ', decoded);
 
   // authenticates the user
   users.authenticate(user, pass)
@@ -26,7 +29,7 @@ const createAuth = (req, res, next) => {
       req.token = users.getToken(validUser);
       next();
     })
-    .catch(next(handle401));
+    .catch(handle401);
 
 };
 

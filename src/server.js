@@ -18,6 +18,7 @@ app.use('*', handle404);
 app.use(handle401);
 app.use(handle403);
 
+// ------------
 //custom routes
 const users = require('../src/auth/users/users-model.js');
 const createAuth = require('./auth/auth-middleware/authentication.js');
@@ -47,6 +48,7 @@ const listUsers = (req, res) => {
 app.post('/signup', signUpHandler);
 app.post('/signin', signInHandler);
 app.get('/users', createAuth, listUsers);
+
 
 // ------------
 // start server
