@@ -1,43 +1,64 @@
 'use strict';
 
+require('dotenv').config();
+
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-let SECRET = process.env.SECRET;
+const handle401 = require('../../../middleware/401.js');
 
 let db = {};
 
-let users = {};
+const users = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  email:{ type: String },
+  role: { type: String, required: true }, 
+});
 
-users.save = async function (record) {
+//modify user instance before saving
+users.pre('save', async function() {
+  // if password is modified(being saved initially)
+  // then hash it. else, nothing
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+});
 
-  if (!db[record.username]) {
-    // hash the password and save it to the user
-    record.password = await bcrypt.hash(record.password, 5)
-    //create a new user
-    db[record.username] = record;
+users.statics.authenticateBasic = async function (username, password) {
 
-    return record;
+  let query = {username};
+  const foundUser = await this.findOne(query);
+  const match = foundUser && await foundUser.comparePassword(password);
+
+  return match;
+
+};
+
+users.methods.comparePassword = async function(inputPass) {
+  try {
+    const passMatch = await bcrypt.compare(inputPass, this.password);
+  
+    return passMatch ? this : null;
+  }
+  catch{ (handle401) };
+
+};
+
+users.methods.getToken = function () {
+
+  let tokenData = {
+    id: this._id,
+    role: this.role,
   }
 
-  return Promise.reject();
+  const signed = jwt.sign(tokenData, process.env.CEO_SECRET);
 
-}
+  return signed;
 
-users.authenticate = async function (user) {
-  let valid = await bcrypt.compare(pass, db[user].password);
-  if (valid) {
-    return db[user];
-  }
-
-  return Promise.reject();
-}
-
-users.getToken = function (user) {
-  let token = jwt.sign({username: user.username}, SECRET)
-  return token;
-}
+};
 
 users.list = () => db;
 
-module.exports = users;
+module.exports = mongoose.model('users', users);
