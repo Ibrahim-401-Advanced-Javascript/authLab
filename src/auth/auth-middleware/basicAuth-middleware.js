@@ -5,7 +5,7 @@ const base64 = require('base-64');
 const users = require('../users/users-model.js');
 const handle401 = require('../../../middleware/401.js');
 
-const createAuth = (req, res, next) => {
+const basicAuth = (req, res, next) => {
   if(!req.headers.authorization) {
     next(handle401);
     return;
@@ -33,5 +33,5 @@ const createAuth = (req, res, next) => {
     .catch(next(handle401));
 };
 
-module.exports = createAuth;
+module.exports = basicAuth;
 
