@@ -1,7 +1,7 @@
 'use strict';
 
 const superagent = require('superagent');
-const users = require('./users.js');
+const users = require('../users/users.js');
 
 /*
   Resources
@@ -14,7 +14,7 @@ const API_SERVER = 'http://localhost:3000/oauth';
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
-module.exports = async function authorize(req, res, next) {
+async function authorize (req, res, next) {
 
   try {
     let code = req.query.code;
@@ -36,7 +36,7 @@ module.exports = async function authorize(req, res, next) {
 
 };
 
-async function exchangeCodeForToken(code) {
+async function exchangeCodeForToken (code) {
 
   let tokenResponse = await superagent.post(tokenServerUrl).send({
     code: code,
@@ -52,7 +52,7 @@ async function exchangeCodeForToken(code) {
 
 }
 
-async function getRemoteUserInfo(token) {
+async function getRemoteUserInfo (token) {
 
   let userResponse =
     await superagent.get(remoteAPI)
@@ -65,7 +65,7 @@ async function getRemoteUserInfo(token) {
 
 }
 
-async function getUser(remoteUser) {
+async function getUser (remoteUser) {
   let userRecord = {
     username: remoteUser.login,
     password: 'oauthpassword', // Placeholder for now
@@ -77,3 +77,5 @@ async function getUser(remoteUser) {
   return [user, token];
 
 }
+
+module.exports = authorize;

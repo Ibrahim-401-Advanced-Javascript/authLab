@@ -5,6 +5,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT;
 
+app.use(express.static('./public'));
 app.use(express.json());
 
 // error handlers
@@ -21,7 +22,8 @@ app.use(handle403);
 // ------------
 //custom routes
 const users = require('../src/auth/users/users.js');
-const createAuth = require('./auth/auth-middleware/basicAuth-middleware.js');
+const basicAuth = require('./auth/auth-middleware/basicAuth-middleware.js');
+const authorize = require('../src/auth/auth-middleware/oAuth-middleware.js');
 
 //http post :3000/signup
 const signUpHandler = (req, res) => {
@@ -38,6 +40,10 @@ const signInHandler = (req, res) => {
   res.status(200).send(req.token);
 };
 
+const oAuthHandler = (req, res) => {
+  res.status(200).send(req.token);
+};
+
 // http get :3000/users
 const listUsers = (req, res) => {
   res.status(200).json(users.list());
@@ -46,8 +52,9 @@ const listUsers = (req, res) => {
 // routes
 
 app.post('/signup', signUpHandler);
-app.post('/signin', signInHandler);
-app.get('/users', createAuth, listUsers);
+app.post('/signin', basicAuth, signInHandler);
+app.get('/oauth', authorize, oAuthHandler);
+app.get('/users', basicAuth, listUsers);
 
 
 // ------------
