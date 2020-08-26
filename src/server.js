@@ -19,11 +19,12 @@ app.use('*', handle404);
 app.use(handle401);
 app.use(handle403);
 
-// ------------
-//custom routes
 const users = require('../src/auth/users/users.js');
 const basicAuth = require('./auth/auth-middleware/basicAuth-middleware.js');
 const authorize = require('../src/auth/auth-middleware/oAuth-middleware.js');
+
+// ------------
+//custom route callbacks
 
 //http post :3000/signup
 const signUpHandler = (req, res) => {
