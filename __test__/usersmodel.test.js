@@ -40,7 +40,9 @@ it('should return null for unknown user when there are others', async () => {
 });
 
 it('should return null when password is bad', async () => {
-  //something
+  const user = await new User(fakeUser).save();
+  const comparison = await user.comparePassword('wrongpass');
+  expect(comparison).toBe(null);
 });
 
 it('should generate a token', async() => {
