@@ -7,7 +7,7 @@ const handle401 = require('../../../middleware/401.js');
 
 const createAuth = (req, res, next) => {
   if(!req.headers.authorization) {
-    next('Invalid Login');
+    next(handle401);
     return;
   }
 
@@ -23,14 +23,14 @@ const createAuth = (req, res, next) => {
   let [user, pass] = decoded.split(':');
   console.log('decoded: ', decoded);
 
+
   // authenticates the user
-  users.authenticate(user, pass)
+  return users.authenticate(user, pass)
     .then(validUser => {
       req.token = users.getToken(validUser);
       next();
     })
-    .catch(handle401);
-
+    .catch(next(handle401));
 };
 
 module.exports = createAuth;

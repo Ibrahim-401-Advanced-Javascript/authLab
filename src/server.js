@@ -20,8 +20,8 @@ app.use(handle403);
 
 // ------------
 //custom routes
-const users = require('../src/auth/users/users-model.js');
-const createAuth = require('./auth/auth-middleware/authentication.js');
+const users = require('../src/auth/users/users.js');
+const createAuth = require('./auth/auth-middleware/basicAuth-middleware.js');
 
 //http post :3000/signup
 const signUpHandler = (req, res) => {

@@ -1,7 +1,7 @@
 'use strict';
 
 require('@code-fellows/supergoose');
-const auth = require('../src/auth/auth-middleware/authentication.js');
+const auth = require('../src/auth/auth-middleware/basicAuth-middleware.js');
 const Users = require('../src/auth/users/users-model.js');
 process.env.SECRET = 'muysecreto';
 
