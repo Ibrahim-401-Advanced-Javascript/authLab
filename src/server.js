@@ -19,7 +19,7 @@ app.use('*', handle404);
 app.use(handle401);
 app.use(handle403);
 
-const users = require('../src/auth/users/users.js');
+const users = require('../src/auth/users/users-model.js');
 const basicAuth = require('./auth/auth-middleware/basicAuth-middleware.js');
 const authorize = require('../src/auth/auth-middleware/oAuth-middleware.js');
 

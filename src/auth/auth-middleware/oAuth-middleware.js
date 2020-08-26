@@ -1,7 +1,7 @@
 'use strict';
 
 const superagent = require('superagent');
-const users = require('../users/users.js');
+const users = require('../users/users-model.js');
 
 /*
   Resources
@@ -14,7 +14,7 @@ const API_SERVER = 'http://localhost:3000/oauth';
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
-async function authorize (req, res, next) {
+module.exports = async function authorize (req, res, next) {
 
   try {
     let code = req.query.code;
@@ -77,5 +77,3 @@ async function getUser (remoteUser) {
   return [user, token];
 
 }
-
-module.exports = authorize;
