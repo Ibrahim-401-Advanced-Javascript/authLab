@@ -51,4 +51,17 @@ it('should generate a token', async() => {
   expect(token).toBeDefined();
   const verifiedToken = jwt.verify(token, process.env.CEO_SECRET);
   expect(verifiedToken.role).toBe(user.role);
-})
+});
+
+it('creating an existing user with email returns the user', async () => {
+  const user = await new User(fakeUser).save();
+  const found = await User.createFromOAuth(user.email);
+  expect(found.email).toBe(user.email);
+  expect(found.password).toBe(user.password);
+});
+
+it('creating new user with email returns new user', async () => {
+  const created = await User.createFromOAuth('new@new.com');
+  expect(created.email).toBe('new@new.com');
+  expect(created.password).not.toBe('none');
+});

@@ -14,7 +14,7 @@ const users = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   email:{ type: String },
-  role: { type: String, required: true }, 
+  role: { type: String }, 
 });
 
 //modify user instance before saving
@@ -28,7 +28,7 @@ users.pre('save', async function() {
 
 users.statics.authenticateBasic = async function (username, password) {
 
-  let query = {username};
+  let query = { username };
   const foundUser = await this.findOne(query);
   const match = foundUser && await foundUser.comparePassword(password);
 
@@ -46,7 +46,7 @@ users.methods.comparePassword = async function(inputPass) {
 
 };
 
-users.methods.getToken = function () {
+users.methods.getToken = function() {
 
   let tokenData = {
     id: this._id,
@@ -58,6 +58,21 @@ users.methods.getToken = function () {
   return signed;
 
 };
+
+users.statics.createFromOAuth = async function(email) {
+
+  const foundUser = await this.findOne({ email });
+
+  if (foundUser) {
+    return foundUser
+  } else {
+    let createdUser = this.create({ username: email, password: 'none', email: email });
+
+    return createdUser;
+  }
+
+};
+
 
 users.list = () => db;
 
