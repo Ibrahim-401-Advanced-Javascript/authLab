@@ -5,7 +5,8 @@ const base64 = require('base-64');
 const users = require('../users/users-model.js');
 const handle401 = require('../../../middleware/401.js');
 
-const basicAuth = (req, res, next) => {
+const basicAuth = async (req, res, next) => {
+
   if(!req.headers.authorization) {
     next(handle401);
     return;
@@ -25,12 +26,22 @@ const basicAuth = (req, res, next) => {
 
 
   // authenticates the user
-  return users.authenticate(user, pass)
-    .then(validUser => {
-      req.token = users.getToken(validUser);
-      next();
-    })
-    .catch(next(handle401));
+  try {
+    const validUser = await users.authenticate(user, pass);
+
+    req.token = validUser.getToken();
+    next();
+  } catch {
+      next(handle401);
+  }
+
+    // .then(validUser => {
+    //   req.token = users.getToken(validUser);
+    //   next();
+    // })
+    // .catch(next(handle401));
+
+    return validUser;
 };
 
 module.exports = basicAuth;

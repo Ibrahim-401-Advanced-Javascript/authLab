@@ -7,10 +7,13 @@ const jwt = require('jsonwebtoken');
 const server = require('../src/server.js').server;
 const supergoose = require('@code-fellows/supergoose');
 
+// let users = {
+//   admin: { username: 'admin', password: 'password', role: 'admin' },
+//   editor: { username: 'editor', password: 'password', role: 'editor'  },
+//   user: { username: 'user', password: 'password', role: 'user'  },
+// }
+
 const mockRequest = supergoose(server);
-
-
-describe('Authorization Routes', () => {
 
   describe(`users signup/in`, () => {
 
@@ -41,4 +44,3 @@ describe('Authorization Routes', () => {
     });
 
   });
-});
