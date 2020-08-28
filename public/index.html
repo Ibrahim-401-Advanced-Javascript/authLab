@@ -13,13 +13,11 @@
   </main>
 
   <script>
-
-    require('dotenv').config();
     
     let URL = "https://github.com/login/oauth/authorize";
 
     let options = {
-      client_id: `${process.env.GITHUB_CLIENT_ID}`,
+      client_id: 'e010dc300e6d139f8daa',
       redirect_uri: 'http://localhost:3000/oauth',
       scope: 'read:user',
       state: '401appconsent'

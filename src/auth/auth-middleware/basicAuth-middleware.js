@@ -31,17 +31,10 @@ const basicAuth = async (req, res, next) => {
 
     req.token = validUser.getToken();
     next();
-  } catch {
-      next(handle401);
-  }
+  } catch (e) { next(`ERROR: ${e.message}`) };
 
-    // .then(validUser => {
-    //   req.token = users.getToken(validUser);
-    //   next();
-    // })
-    // .catch(next(handle401));
+  return validUser;
 
-    return validUser;
 };
 
 module.exports = basicAuth;

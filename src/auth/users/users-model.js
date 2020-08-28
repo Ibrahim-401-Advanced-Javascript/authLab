@@ -6,9 +6,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const handle401 = require('../../../middleware/401.js');
-
-let db = {};
+let db = process.env.MONGODB_URI;
+// let db = {}
 
 const users = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -42,7 +41,7 @@ users.methods.comparePassword = async function(inputPass) {
   
     return passMatch ? this : null;
   }
-  catch{ (handle401) };
+  catch (e) { next(`ERROR: ${e.message}`) };
 
 };
 
@@ -72,6 +71,10 @@ users.statics.createFromOAuth = async function(email) {
   }
 
 };
+
+// users.methods.authenticateToken = async function(token) {
+
+// }
 
 
 users.list = () => db;

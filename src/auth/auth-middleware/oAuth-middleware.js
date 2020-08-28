@@ -2,7 +2,7 @@
 
 const superagent = require('superagent');
 const users = require('../users/users-model.js');
-
+ require('dotenv').config();
 /*
   Resources
   https://developer.github.com/apps/building-oauth-apps/
@@ -72,7 +72,7 @@ async function getUser (remoteUser) {
   };
 
   let user = await users.save(userRecord);
-  let token = users.generateToken(user);
+  let token = users.getToken(user);
 
   return [user, token];
 
