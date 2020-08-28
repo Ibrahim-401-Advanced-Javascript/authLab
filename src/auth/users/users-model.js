@@ -5,9 +5,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-let db = process.env.MONGODB_URI;
-// let db = {}
+const SECRET = process.env.CEO_SECRET;
 
 const users = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -45,26 +43,20 @@ users.methods.comparePassword = async function(inputPass) {
 
 };
 
-users.methods.getToken = function() {
+users.statics.createFromOAuth = async function(username) {
 
-  let tokenData = {
-    id: this._id,
-    role: this.role,
-  }
+  if (!username) { return Promise.reject('Validation Error') }
 
-  const signed = jwt.sign(tokenData, process.env.CEO_SECRET);
+  const foundUser = await this.findOne({ username });
 
-  return signed;
-
-};
-
-users.statics.createFromOAuth = async function(email) {
-
-  const foundUser = await this.findOne({ email });
-
-  if (foundUser) {
+  try { 
+    if (!foundUser) {
+    throw new Error('User Not Found');
+  } else if (foundUser) {
     return foundUser
-  } else {
+    }
+  
+  } catch (e) {
     let createdUser = this.create({ username: email, password: 'none', email: email });
 
     return createdUser;
@@ -72,11 +64,26 @@ users.statics.createFromOAuth = async function(email) {
 
 };
 
-// users.methods.authenticateToken = async function(token) {
+users.methods.getToken = function() {
 
-// }
+  let tokenData = {
+    id: this._id,
+    role: this.role,
+  }
 
+  let options = {};
 
-users.list = () => db;
+  const signed = jwt.sign(tokenData, SECRET, options);
+
+  return signed;
+
+};
+
+users.statics.authenticateToken = function(token) {
+
+  let parsedToken = jwt.verify(token, SECRET);
+  return this.findById(parsedToken.id);
+
+}
 
 module.exports = mongoose.model('users', users);

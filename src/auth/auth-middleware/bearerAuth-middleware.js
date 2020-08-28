@@ -11,12 +11,15 @@ const bearerAuth = (req, res, next) => {
 
   let token = req.headers.authorization.split(' ').pop();
 
-  users.authenticateToken(token)
-    .then(validUser =>{
+  users.authenticateToken(token);
+  try {
+    (validUser =>{
       req.user = validUser;
       next();
-    })
-    .catch(next('Invalid Login'));
+    });
+  } catch (e) {
+    next(`ERROR: ${e.message}`);
+  }
 
 };
 

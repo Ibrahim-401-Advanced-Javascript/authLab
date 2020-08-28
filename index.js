@@ -14,4 +14,4 @@ mongoose.connect(process.env.MONGODB_URI, mongooseOpts);
 
 console.log(process.env.MONGODB_URI);
 
-require('./src/server.js').start(process.env.PORT);
+require('./src/server/server.js').start(process.env.PORT);
