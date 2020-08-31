@@ -2,7 +2,7 @@
 
 const express = require('express');
 const bearerAuth = require('../auth/auth-middleware/bearerAuth-middleware');
-const permissions = require('../auth/auth-middleware/basicAuth-middleware.js');
+const permissions = require('../auth/auth-middleware/acl.js');
 const router = express.Router();
 
 const routeHandler = (req, res) => {

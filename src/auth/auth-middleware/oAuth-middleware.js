@@ -1,7 +1,7 @@
 'use strict';
 
 const superagent = require('superagent');
-const users = require('../users/users-model.js');
+const User = require('../users/users-model.js');
  require('dotenv').config();
 /*
   Resources
@@ -71,8 +71,8 @@ async function getUser (remoteUser) {
     password: 'oauthpassword', // Placeholder for now
   };
 
-  let user = await users.save(userRecord);
-  let token = users.getToken(user);
+  let user = await User.createFromOAuth(remoteUser.login);
+  let token = user.getToken();
 
   return [user, token];
 
