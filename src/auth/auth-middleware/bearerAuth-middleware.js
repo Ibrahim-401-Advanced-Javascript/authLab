@@ -1,8 +1,8 @@
 'use strict';
 
-const users = require('../users/users-model.js');
+const User = require('../users/users-model.js');
 
-const bearerAuth = (req, res, next) => {
+const bearerAuth = async (req, res, next) => {
 
   if (!req.headers.authorization) {
     next('Invalid Login: Missing Headers');
@@ -11,14 +11,22 @@ const bearerAuth = (req, res, next) => {
 
   let token = req.headers.authorization.split(' ').pop();
 
-  users.authenticateToken(token);
   try {
-    (validUser =>{
-      req.user = validUser;
-      next();
-    });
+    const validUser = await User.authenticateToken(token);
+
+    req.user = validUser;
+
+    req.user = {
+      username: validUser.username,
+      fullname: validUser.fullname,
+      email: validUser.email,
+      capabilities: validUser.capabilities,
+    };
+
+    next();
+
   } catch (e) {
-    next(`ERROR: ${e.message}`);
+    next('Invalid Login');
   }
 
 };

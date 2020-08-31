@@ -41,14 +41,10 @@ const listUsers = (req, res) => {
   res.status(200).json(users.list());
 };
 
-const bearerAuthHandler = (req, res) => {
-
-};
-
 // ------------
 
 // routes
-app.get('/bearer', bearerAuth, bearerAuthHandler);
+app.get('/bearer', bearerAuth, bearerAuth);
 app.get('/users', basicAuth, listUsers);
 
 
